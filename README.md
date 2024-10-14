@@ -1,12 +1,12 @@
 # react-native-remote-update
 
-## ¿Qué es esto?
+## What is this?
 
-`react-native-remote-update` es un módulo para React Native que permite actualizar tu aplicación de forma remota. Utiliza un archivo JSON para almacenar la versión de la aplicación y el hash del commit de la última versión. Al iniciar la aplicación, verifica si hay una actualización disponible y descarga la nueva versión si la hay.
+`react-native-remote-update` is a module for React Native that allows you to update your application remotely. It uses a JSON file to store the application's version and the commit hash of the latest version. When the app starts, it checks if there is an available update and downloads the new version if there is one.
 
-## Instalación
+## Installation 📦
 
-Puedes instalar el módulo utilizando uno de los siguientes comandos:
+Install the module using one of the following commands:
 
 ```sh
 npm install react-native-remote-update
@@ -20,15 +20,14 @@ yarn add react-native-remote-update
 bun add react-native-remote-update
 ```
 
-dirija a su oiryecto android en la aruta androi/app/src/main/java/com/yourapp/MainActivity.java
-
-import tis line
+Direct to your Android project at the path `android/app/src/main/java/com/yourapp/MainActivity.java`.
+Import this line:
 
 ```kotlin
-import com.remoteupdate.BundleFileManager
+    import com.remoteupdate.BundleFileManager
 ```
 
-y agrgeu este fragmeto de codigo en el bloque reactNativeHost
+add this fragment of code to the reactNativeHost block
 
 ```kotlin
 override fun getJSBundleFile(): String? {
@@ -36,7 +35,7 @@ override fun getJSBundleFile(): String? {
  }
 ```
 
-su archvo devera que dar asi
+your archvo should look like this
 
 ```kotlin
 package com.remote
@@ -52,7 +51,7 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
 import java.io.File
-import com.remoteupdate.BundleFileManager // <-- 👈 Importa el modulo BundleFileManager
+import com.remoteupdate.BundleFileManager // <-- 👈 Import the BundleFileManager module
 
 class MainApplication : Application(), ReactApplication {
 
@@ -91,13 +90,15 @@ class MainApplication : Application(), ReactApplication {
 }
 ```
 
+**¡Atención!** La función de actualizaciones remotas actualmente no está disponible en iOS. Estamos trabajando en implementarla y te informaremos tan pronto como esté lista. Gracias por tu comprensión.
+
 ## Uso
 
-aqui hay un ejemplo dem un servidor de prueva com9o se deve entregarlos archivo [servidor de prueba](https://github.com/elmanci2/react-native-remote-update-server-test)
+Here is an example of a test server [test server](https://github.com/elmanci2/react-native-remote-update-server-test)
 
-Para utilizar el módulo `react-native-remote-update`, sigue estos pasos:
+To use the `react-native-remote-update` module, follow these steps:
 
-1. **Importar el módulo** en tu aplicación:
+1. **Import the module** in your application:
 
    ```javascript
    import {
@@ -106,57 +107,57 @@ Para utilizar el módulo `react-native-remote-update`, sigue estos pasos:
    } from 'react-native-remote-update';
    ```
 
-# ⚠ ADVERTENCIA IMPORTANTE ⚠
+# ⚠ IMPORTANT WARNING ⚠
 
-Los enlaces de descarga **DEBEN SER DIRECTOS** y no deben devolver una respuesta JSON. El servidor debe proporcionar un archivo descargable
+Download links **MUST BE DIRECT** and must not return a JSON response.
 
-1. **Configurar la URL de actualización** que devuelve el JSON con la información de la versión:
+1. **Configure the update URL** that returns the JSON with the version information:
 
    ```javascript
    const uri = 'https://your-server.com/update.json';
    ```
 
-2. **Llamar a la función `RemoteUpdate`** dentro de un hook `useEffect` para verificar actualizaciones cuando tu aplicación se inicia:
+2. **Call the `RemoteUpdate` function inside a `useEffect` hook to check for updates when your application starts:**
 
-   ```javascrip
-   useEffect(() => {
-     RemoteUpdate({ uri }, (error, success) => {
-       if (error) {
-         console.error('Error al actualizar:', error);
-       } else {
-         console.log('Actualización exitosa:', success);
-       }
-     });
-   }, []);
-   ```
+```javascript
+useEffect(() => {
+  RemoteUpdate({ uri }, (error, success) => {
+    if (error) {
+      console.error('Error al actualizar:', error);
+    } else {
+      console.log('Actualización exitosa:', success);
+    }
+  });
+}, []);
+```
 
-3. **Envolver tu aplicación** en el `RemoteUpdateProvider`. Este componente maneja el estado de la actualización y captura los errores. Si ocurre un error que impide que la aplicación se inicie, el `RemoteUpdateProvider` mostrará un componente de error o actualización según lo que desees. Esto también proporciona la oportunidad de enviar una nueva versión y eliminar los bundles que causan este error del sistema:
+3. **Wrap your application** in the `RemoteUpdateProvider` component. This component handles the update state and captures errors. If an error prevents the application from starting, the `RemoteUpdateProvider` component will display an error or update component as desired. This also provides the opportunity to send a new version and delete bundles that cause this error system:
 
-   ```javascript
-   const App = () => {
-     return (
-       <RemoteUpdateProvider
-         fallback={<Text>Actualizando...</Text>}
-         dev={!__DEV__}
-       >
-         <YourMainComponent />
-       </RemoteUpdateProvider>
-     );
-   };
+```javascript
+const App = () => {
+  return (
+    <RemoteUpdateProvider
+      fallback={<Text>Error reverting to previous version, etc...</Text>} // <-- 👈 Fallback component to display if an error occurs in the app when updating the new version
+      dev={!__DEV__}
+    >
+      <YourMainComponent />
+    </RemoteUpdateProvider>
+  );
+};
 
-   export default App;
-   ```
+export default App;
+```
 
-### Ejemplo de Uso
+### Example Usage
 
-Aquí tienes un ejemplo de cómo implementar `react-native-remote-update` en tu aplicación:
+Here is an example of how to implement `react-native-remote-update` in your application:
 
 ```javascript
 import React, { useEffect } from 'react';
 import { Text, ToastAndroid, View } from 'react-native';
 import { RemoteUpdate, RemoteUpdateProvider } from 'react-native-remote-update';
 
-const uri = 'https://your-server.com/update.json'; // <-- 👈 URL de actualización directa para descargar el archivo JSON
+const uri = 'https://your-server.com/update'; // <-- 👈 URL de actualización directa para descargar el archivo JSON
 
 const MainComponent = () => {
   return (
@@ -183,7 +184,7 @@ const MainComponent = () => {
 };
 
 const App = () => {
-  // ==== esta implemetacion buwscara actulizaciones al iniciar la app y si hay procede a actulizarce automatiocamete los cambis se veran reflejado al reabrir la app  =====
+  // ==== this implementation will automatically update when the app starts and if there is a change, the changes will be reflected when the app is restarted ====
 
   useEffect(() => {
     RemoteUpdate({ uri }, (error, success) => {
@@ -198,9 +199,9 @@ const App = () => {
   }, []);
 
   return (
-    <RemoteUpdateProvider // <-- 👈 no es obligatorio pero si recomendable
-      fallback={<Text>Error Regresando a una version anterior etc...</Text>} // <-- 👈 Componente de fallback para mostrar si hubo un eror en la app al actulisar la nueva versión
-      dev={!__DEV__} // <-- 👈 Activar modo de desarrollo para ver el componente de fallback
+    <RemoteUpdateProvider // <-- 👈 this is not mandatory but it is recommended
+      fallback={<Text>Error Regresando a una version anterior etc...</Text>} // <-- 👈 Fallback component to display if an error occurs in the app when updating the new version
+      dev={!__DEV__} // <-- 👈 Enable development mode to view the fallback component
     >
       <MainComponent />
     </RemoteUpdateProvider>
@@ -210,112 +211,98 @@ const App = () => {
 export default App;
 ```
 
-# ⚠ TIP ⚠
+# ⚠ WARNING ⚠
 
-esto no funcionara en desarrollo para provar su impolemetacion deve gerar un apk y probarlo hay
-
-abra un terminal en su proyecto y dirijace a la acarpeta android
+this dosn't work in development to test your implementation you need to generate an apk and test it there
 
 ```sh
 cd android
 ```
 
-y ejecute este comando
+and run this command
 
 ```sh
 ./gradlew assembleRelease
 ```
 
-esto le dejara una apk en la ruta android/app/build/outputs/apk/release
-el archivo se llama app-release.apk
+this will leave an apk in the android/app/build/outputs/apk/release path
+the file is called app-release.apk
 
-instale y pruebe el sistema
+## creation of bundle file
 
-## creasion de archivo bundle
+# ⚠ WARNING ⚠
 
-modifique todo lo que quiera de su app a nivel de jvascript puede isntalar nuevos paquete que solo sean de javascript no actulise si a instalao paquetes que requieren de codigo nativo ya que esete codigo no se compila en el bundle solo el jsvascript
+modify everything you want in your app at the javascript level you can install new packages that are only javascript and don't act if you install packages that require native code because that code is not compiled into the bundle only javascript
 
-dirikace a la rais de su proyecto rect native en una consola i ejecute este comando
+go to your project native folder in a console and run this command
 
 ```sh
 npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output ./dist/index.bundle --assets-dest ./assets/
 ```
 
-se creara un bundle en la carpeta dist
-
-ese archvi que descargara su app para actulisar el codigo de la app ya en producion
-
-./dist/index.bundle
-y la ur que esta en el json bundle.uri deve proporcinar la descarga dirtecta de ese archivo
+this will create a bundle in the dist folder `./dist/index.bundle`
 
 ```json
  "bundle": {
-    "uri": "https://your-server.com/bundle" // <-- 👈 URL de descarga directo para el bundle
+    "uri": "https://your-server.com/bundle" // <-- 👈 URL to download the bundle directly
   }
 ```
 
-# ⚠ ADVERTENCIA IMPORTANTE ⚠
+# ⚠ warning ⚠
 
-no actulise la app si a usado codigo no timo solo puede modificar el json en la app si intalo o configuro paquete que rewuiran funciones nativas esto no funcionaran en la app que ya tine publicada devera genera un nubo archi y ppublicarlo como nornmalmete lo haria pero si solo modificao el javascriv o intalo paqutes que solo sea javascrib la actulizacion funcinara perfectamete
+Do not update the app if you have used non-native code. You can only modify the JSON in the app. If you install or configure packages that overwrite native functions, these changes will not work in the app that is already published. You will need to generate a new file and publish it as you would normally do. However, if you only modified the JavaScript or installed packages that are purely JavaScript, the update will work perfectly.
 
-## Estructura del JSON
+## JSON structure
 
-esto deve ser un archivo json desacrgable uno una respuesta guet
+This should be a downloadable JSON file. Here is an example of the structure of the JSON that should be returned by your server:
 \_\_
-Aquí tienes un ejemplo de la estructura JSON que debería devolver tu servidor:
+json example:
 
 ```json
 {
-  "version": "1.0.0", // <-- 👈 numero de version
-  "versionCode": 4, // <-- 👈 numero de version del codigo de la app esto es exencial para que la app se actulise incremete esto en cada actulizacion cominece en 0
-  "commit": "4444", // <-- 👈 hash del commit de la ultima version
-  "fallback": true, // <-- 👈 permite que el sitema hatga un fallback automatico
+  "version": "1.0.0", // <-- 👈 version number
+  "versionCode": 4, // <-- 👈 version code of the app this is exlusive to make the app increment this every update begins at 0
+  "commit": "4444", // <-- 👈  hash of the last version
+  "fallback": true, // <-- 👈 allow the system to automatically fallback
   "fallbackDetails": {
-    "commit": "3333", // <-- 👈 hash del commit de la ultima version o el hash del la version espesiifica quedeseas regresar
-    "enable": false // <-- 👈 activar o desactivar el fallback
+    "commit": "3333", // <-- 👈 hash of the last version or the hash of the version specified that should be returned
+    "enable": false // <-- 👈 activate or deactivate the fallback
   },
   "bundle": {
-    "uri": "https://your-server.com/bundle" // <-- 👈 URL de descarga directo para el bundle
+    "uri": "https://your-server.com/bundle" // <-- 👈 URL to download the bundle directly
   }
 }
 ```
 
-### Explicación de los Campos JSON
+### Explanation of JSON fields
 
-| Campo             | Tipo    | Descripción                                                            |
-| ----------------- | ------- | ---------------------------------------------------------------------- |
-| `version`         | string  | El número de versión de la aplicación.                                 |
-| `versionCode`     | number  | El código de versión utilizado para la actualización de la aplicación. |
-| `commit`          | string  | El hash del commit de la última versión.                               |
-| `fallback`        | boolean | Indica si hay un fallback disponible.                                  |
-| `fallbackDetails` | object  | Contiene detalles sobre la versión de fallback.                        |
-| `bundle`          | object  | Contiene la información del bundle para la actualización.              |
-| `uri`             | string  | URL para descargar el archivo de bundle.                               |
+| Field             | Type    | Description                                           |
+| ----------------- | ------- | ----------------------------------------------------- |
+| `version`         | string  | The version number of the application                 |
+| `versionCode`     | number  | The version code used for the application's update.   |
+| `commit`          | string  | The hash of the commit for the latest version.        |
+| `fallback`        | boolean | Indicates if a fallback is available.                 |
+| `fallbackDetails` | object  | Contains details about the fallback version.          |
+| `bundle`          | object  | Contains information about the bundle for the update. |
+| `uri`             | string  | URL to download the bundle file.                      |
 
-## Métodos y Parámetros
+## Methods and Parameters
 
-| Método             | Parámetros                                            | Descripción                                                  |
-| ------------------ | ----------------------------------------------------- | ------------------------------------------------------------ |
-| `RemoteUpdate`     | `{ uri: string, callback?: (error, result) => void }` | Inicia una verificación de actualización remota.             |
-| `getCurrentJson`   | `callback: (error, result) => void`                   | Obtiene la configuración JSON actual desde la fuente remota. |
-| `getBackupBundles` | `callback: (error, result) => void`                   | Recupera los bundles de respaldo si están disponibles.       |
-| `getCurrentBundle` | `callback: (error, result) => void`                   | Obtiene la información del bundle actual.                    |
+| Method             | Parameters                                            | Description                                                      |
+| ------------------ | ----------------------------------------------------- | ---------------------------------------------------------------- |
+| `RemoteUpdate`     | `{ uri: string, callback?: (error, result) => void }` | Initiates a remote update check.                                 |
+| `getCurrentJson`   | `callback: (error, result) => void`                   | Retrieves the current JSON configuration from the remote source. |
+| `getBackupBundles` | `callback: (error, result) => void`                   | Retrieves the backup bundles if available.                       |
+| `getCurrentBundle` | `callback: (error, result) => void`                   | Gets information about the current bundle.                       |
+|                    |
 
-## Consejos y Advertencias
+## Tips and Warnings
 
-- Asegúrate de que tu servidor esté configurado correctamente para alojar el archivo JSON y el bundle.
-- Utiliza HTTPS para comunicaciones seguras al recuperar actualizaciones.
-- Recuerda probar la integración a fondo en ambas plataformas, Android e iOS.
-- Ten en cuenta que la integración de iOS para actualizaciones remotas llegará pronto y actualmente puede no estar disponible.
+- Ensure that your server is properly configured to host the JSON file and the bundle.
+- Use HTTPS for secure communications when retrieving updates.
+- Remember to thoroughly test the integration on both platforms, Android and iOS.
+- Keep in mind that iOS integration for remote updates will be available soon and may currently be unavailable.
 
-## Contribuyendo
+## Contributing
 
-Consulta la [guía de contribución](CONTRIBUTING.md) para aprender cómo contribuir al repositorio y al flujo de trabajo de desarrollo.
-
-## Licencia
-
-MIT
-
----
-
-Hecho con [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+Check the [contribution guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
